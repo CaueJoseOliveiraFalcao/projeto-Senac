@@ -4,6 +4,7 @@ const {v4: uuidv4} = require('uuid');
 const bcrypt = require('bcrypt');
 const { resolve } = require("path");
 const { rejects } = require("assert");
+const { error } = require("console");
 
 async function main() {
   const connection = mysql.createConnection({
@@ -23,6 +24,8 @@ async function main() {
 
     await seedUsers(connection);
     await seedIvoices(connection);
+    await seedCustomers(connection);
+    await seedRevenue(connection);
   } catch (err) {
     console.error('An error occurred while attempting to seed the database:', err);
   } finally {
@@ -106,6 +109,80 @@ async function seedIvoices(client){
     throw error;
   }
 }
+async function seedCustomers(client){
+  try{
+    const CreateTableCustomers = `
+    CREATE TABLE IF NOT EXISTS customers(
+      id VARCHAR(36) PRIMARY KEY,
+      name VARCHAR(100) NOT NULL,
+      email VARCHAR(100) NOT NULL,
+      image_url VARCHAR(255) NOT NULL
+    );
+    `;
+
+    await client.query(CreateTableCustomers);
+    console.log("created Customers Table");
+    const insertCostumer = await Promise.all(
+      customers.map(async(customer) => {
+        const insertCustomerValueQuery = `
+            INSERT IGNORE INTO customers (id , name , email , image_url)
+            VALUES (? , ? , ? , ?);
+        `;
+        return await client.query(insertCustomerValueQuery , [customer.id , customer.name , customer.email , customer.image_url]);
+    }));
+    console.log('Seeded : ', insertCostumer.length , 'Costumer');
+    return {
+      CreateTableCustomers,
+      customers: insertCostumer,
+    };
+  }catch(err){
+    console.error("error dettech : " , err);
+    throw(error);
+  }
+}
+async function seedRevenue(client) {
+  try {
+    const CreateRevenueTable = `
+      CREATE TABLE IF NOT EXISTS revenue(
+        id VARCHAR(36) PRIMARY KEY,
+        month VARCHAR(4) NOT NULL UNIQUE,
+        revenue INT NOT NULL
+      );
+    `;
+
+    await client.query(CreateRevenueTable);
+    console.log('Created Revenue Table');
+
+    const InsertRevenueValues = await Promise.all(
+      revenue.map(async (eachRevenue) => {
+        const id = uuidv4();
+        const InsertRevenueValuesQuery = `
+          INSERT IGNORE INTO revenue(id , month , revenue)
+          VALUES(? , ? , ?);
+        `;
+
+        await client.query(InsertRevenueValuesQuery, [id, eachRevenue.month, eachRevenue.revenue]);
+        return {
+          id,
+          month: eachRevenue.month,
+          revenue: eachRevenue.revenue,
+        };
+      })
+    );
+
+    console.log('Seeded : ', InsertRevenueValues.length, 'Revenue');
+    return {
+      CreateRevenueTable,
+      revenue: InsertRevenueValues,
+    };
+  } catch (err) {
+    console.error('Error : ', err);
+    throw err;
+  }
+}
+
+
+
 
 
 // Either await the main function or return its promise for proper control flow
