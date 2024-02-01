@@ -1,4 +1,9 @@
 import { sql } from '@vercel/postgres';
+import mysql , {Connection} from 'mysql';
+import { createConnection } from './connection';
+
+
+
 import {
   CustomerField,
   CustomersTableType,
@@ -10,9 +15,10 @@ import {
 } from './definitions';
 import { formatCurrency } from './utils';
 
-export async function fetchRevenue() {
-  // Add noStore() here prevent the response from being cached.
-  // This is equivalent to in fetch(..., {cache: 'no-store'}).
+export async function fetchRevenue(): Promise<Revenue[]>{
+  conncetion = createConnection();
+}
+
 
   try {
     // Artificially delay a response for demo purposes.
