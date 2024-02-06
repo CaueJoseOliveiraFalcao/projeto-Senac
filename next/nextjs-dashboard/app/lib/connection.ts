@@ -1,16 +1,22 @@
-const mysql = require("mysql");
+import { createConnection as createMySQLConnection } from 'mysql2/promise';
 import { Connection } from 'mysql';
-import dotenv from 'dotenv';
+let connection: Connection | null = null;
 
-dotenv.config();
-
-function createConnection(): Connection {
-    return mysql.createConnection({
-        host: process.env.MYSQL_HOST,
-        user: process.env.MYSQL_USERNAME,
-        port: process.env.MYSQL_PORT,
-        database: process.env.MYSQL_DATABASE
-    });
+async function createConnection(): Promise<Connection | null> {
+    if (!connection) {
+        try {
+            connection = await createMySQLConnection({
+                host: 'localhost',
+                user: 'root',
+                password: '',
+                database: 'nextjs'
+            });
+        } catch (error) {
+            console.error('Erro ao estabelecer conexão com o banco de dados:', error);
+            return null;
+        }
+    }
+    return connection;
 }
 
-export{createConnection};
+export { createConnection };

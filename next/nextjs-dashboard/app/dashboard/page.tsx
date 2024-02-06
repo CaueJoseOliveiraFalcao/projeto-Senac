@@ -4,6 +4,7 @@ import LatestInvoices from '@/app/ui/dashboard/latest-invoices';
 import { fetchRevenue } from '../lib/data';
 export default async function Page() {
     const revenueData = await fetchRevenue();
+    console.log(revenueData);
     return (
       <main>
         <h1 className={`mb-4 text-xl md:text-2xl`}>
