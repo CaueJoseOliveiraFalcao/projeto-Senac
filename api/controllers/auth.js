@@ -43,12 +43,12 @@ export const register = (req , res) => {
 }
 export const login = (req , res) => {
     const {email , password} = req.body;
-    const dbEmail = db.query("SELECT * FROM user WHERE email = ?" , [email] , async(error , data)=> { 
+    db.query("SELECT * FROM user WHERE email = ?" , [email] , async(error , data)=> { 
         if (error){
             console.log(error);
             return res.status(500).json({msg : 'erro na insersao de dados'});
         }
-        if(dbEmail.length === 0){
+        if(data.length === 0){
             return res.status(404).json({msg : 'efetue o cadastro primeiro'});
         }else{
             const user = data[0];
