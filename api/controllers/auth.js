@@ -4,11 +4,15 @@ import bcrypt from 'bcrypt';
 import  jwt  from "jsonwebtoken";
 export const register = (req , res) => {
     const {userName , email , password , confirmPassword} = req.body;
+    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
     if (!userName){
         return res.status(422).json({msg : 'nome e obrigatorio'});
     }
     if (!email){
         return res.status(422).json({msg : 'email e obrigatorio'});
+    }
+    if (!emailRegex.test(email)){
+        return res.status(422).json({msg : 'email invalido'});
     }
     if (!password){
         return res.status(422).json({msg : 'senha e obrigatorio'});
@@ -49,7 +53,7 @@ export const login = (req , res) => {
             return res.status(500).json({msg : 'erro na insersao de dados'});
         }
         if(data.length === 0){
-            return res.status(404).json({msg : 'efetue o cadastro primeiro'});
+            return res.status(404).json({msg : ' email invalido'});
         }else{
             const user = data[0];
 
