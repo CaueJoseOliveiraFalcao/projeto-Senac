@@ -1,5 +1,3 @@
-
-
 export default function AuthPage({children}  : {children : React.ReactNode}){
     return (
         <main className="text-gray-600 flex bg-no-repeat  bg-cover h-screen flex-col justify-center items-center" style={{backgroundImage : "url('https://th.bing.com/th/id/OIG3._2N_B24KDMiVV1CtdcOd?pid=ImgGn')"}}>
