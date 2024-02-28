@@ -4,16 +4,17 @@ import Link from "next/link"
 import { useState } from "react";
 import AuthInput from "../../components/AuthInput";
 import { makeRequest } from "../../../../axios";
+import { useRouter } from "next/navigation";
 export default function Login (){
     const [email ,setEmail] = useState('');
     const [password ,setPassword] = useState('');
-
+    const router = useRouter();
     const handleLogin = (e:any) => {
         e.preventDefault();
         makeRequest.post('/auth/login' , {email , password}).then((res) => {
             localStorage.setItem("rede-social:user" , JSON.stringify(res.data.data.user));
             localStorage.setItem("rede-social:token" , JSON.stringify(res.data.data.token));
-            
+            router.push('/');
         }).catch((err) => {
             alert(err.response.data.msg);
         })
