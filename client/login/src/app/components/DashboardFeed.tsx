@@ -18,7 +18,7 @@ const posts = [
 ]
 export default function DashboardFeed() {
     return (
-        <div>
+        <div className="flex w-full flex-col gap-5 items-center justify-center">
             {posts.map((post , id) => {
                 return (
                     <DashboardPost post={post} key={id}/>

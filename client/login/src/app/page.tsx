@@ -16,14 +16,12 @@ export default function Home() {
     }
   },[])
   return (
-    <main className="flex min-h-screen flex-col items-center justify-between bg-zinc-100">
+    <main className="flex h-full flex-col items-center justify-between bg-zinc-100">
       <DashboardHeader/>
-      <div className="w-full h-svh flex items-start pt-10">
+      <div className="w-full h-full flex items-start pt-10">
         <DashboardSideBar/>
         <DashboardFeed/>
       </div>
-      <h1>Login Page</h1>
-
     </main>
   );
 }

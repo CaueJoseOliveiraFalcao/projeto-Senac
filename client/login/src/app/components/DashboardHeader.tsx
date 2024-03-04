@@ -30,9 +30,9 @@ export default function DashboardHeader() {
                 <div className="flex gap-3 px-3">
                     <button className="bg-zinc-200 p-2 rounded-full hover:bg-zinc-300">
                         <TbMessageCircle2Filled/>
-                    </button>uoda
+                    </button>
                     <button  className="bg-zinc-200 p-2 rounded-full hover:bg-zinc-300">
-                        <FaBell/>s
+                        <FaBell/>
                     </button>
                 </div>
                 <div className="relative">
