@@ -5,17 +5,19 @@ interface IPost {
     id : number,
     post_desc : string,
     img : string,
-    userName : string,
-    userImg:string
+    created_at : string|null,
+    userId:number,
+    userName : string
 }
 
+
 export default function DashboardPost(props:{post:IPost}){
-    const {post_desc , img , userName,userImg} = props.post
+    const {post_desc , img , userName,userId} = props.post
 
     return(
         <div className=" bg-white rounded-lg p-4 shadow-md">
             <header className="flex gap-2 pb-4 border-b items-center">
-                <img  className='w-8 h-8 rounded-full'src={userImg ? userImg : 'https://news.uie.com/static/img/avatar.png'} alt="user img"/>
+                <img  className='w-8 h-8 rounded-full'src='https://news.uie.com/static/img/avatar.png' alt="user img"/>
                 <div className="flex-col flex ">
                     <span className="font-semibold">{userName}</span>
                     <span className="text-xs">06/07/2013</span>

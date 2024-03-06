@@ -1,25 +1,34 @@
+import { useEffect, useState } from "react";
 import DashboardPost from "./DashboardPost";
+import { makeRequest } from "../../../axios";
 
-const posts = [
-    {
-        id :1,
-        post_desc : 'test',
-        img : "https://img.freepik.com/fotos-gratis/a-paisagem-bonita-do-sol-da-praia-com-um-barco_1112-212.jpg?w=1380",
-        userName : 'teste',
-        userImg :"",
-    },
-    {
-        id :2,
-        post_desc : 'test2',
-        img : "https://img.freepik.com/fotos-gratis/vista-incrivel-de-uma-falesia-verde-perto-do-mar-no-arquipelago-dos-acores-portugal_181624-48407.jpg?t=st=1709217126~exp=1709220726~hmac=829dc2292dd773d9a678d1c247eacd111f4a54888d20419fd1b294d8abec614d&w=1380",
-        userName : 'teste2',
-        userImg :"",
-    }
-]
+
+interface IPost {
+    id : number,
+    post_desc : string,
+    img : string,
+    created_at : string|null,
+    userId:number,
+    userName : string
+}
+
+
 export default function DashboardFeed() {
+
+    const [posts,SetPosts] = useState<IPost[]|undefined>(undefined);
+
+    useEffect(() =>{
+        makeRequest.get("post/")
+        .then((res) => {
+            SetPosts(res.data.data)
+            console.log(posts)
+        }).catch((error) => {
+            console.log(error)
+        })
+    },[])
     return (
         <div className="flex w-full flex-col gap-5 items-center justify-center">
-            {posts.map((post , id) => {
+            {posts?.map((post , id) => {
                 return (
                     <DashboardPost post={post} key={id}/>
                 )
