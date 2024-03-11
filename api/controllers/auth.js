@@ -76,9 +76,18 @@ export const login = (req , res) => {
                 },
                 process.env.TOKEN,
                 {algorithm: "HS256"}
-                )
-                res.status(200).json({msg : 'Usuario logado com sucesso' ,
-                data:{user , token:{Token , refreshToken}}});
+                );
+                delete user.password;
+                res
+                    .cookie("accessToken", Token , {
+                    httpOnly : true
+                })
+                    .cookie("refreshToken", refreshToken , {
+                    httpOnly : true
+                })
+                    .status(200).json({
+                msg : 'Usuario logado com sucesso' ,
+                user,});
             } catch (err){
                 console.log(err);
                 res.status(500).json({msg : 'Falha no Login' , Token , refreshToken});
@@ -87,4 +96,48 @@ export const login = (req , res) => {
         }
     });
 
+}
+
+export const refresh = (req,res)=>{
+    const authHeader = req.headers.cookie ?.split("; ")[1]
+    const refresh = authHeader&&authHeader.split('=')[1]
+
+    const tokenStruct = refresh.split('.')[1];
+    const payload = atob(tokenStruct);
+
+    try{
+        const refreshToken = jwt.sign({
+            exp : Math.floor(Date.now()/1000) + 24 * 60 * 60,
+            id :JSON.parse(payload).id
+        },
+        process.env.REFRESH,
+        {algorithm: "HS256"}
+        )
+        const Token = jwt.sign({
+            exp : Math.floor(Date.now()/1000) + 3600,
+            id : JSON.parse(payload).id
+        },
+        process.env.TOKEN,
+        {algorithm: "HS256"}
+        );
+        res
+            .cookie("accessToken", Token , {
+            httpOnly : true
+        })
+            .cookie("refreshToken", refreshToken , {
+            httpOnly : true
+        })
+            .status(200).json({
+        msg : 'Token atualizado'});
+    } catch (err){
+        console.log(err);
+        res.status(500).json({msg : 'Falha no Login' , Token , refreshToken});
+    }
+}
+export const logout = (req,res) =>{
+    return res
+    .clearCookie("acessToken" , {secure:true , sameSite : "none"})
+    .clearCookie("refreshToken" , {secure:true , sameSite : "none"})
+    .status(200)
+    .json({msg : 'Logout edetuado'})
 }

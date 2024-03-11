@@ -1,24 +1,28 @@
 import Link from "next/link"
 import {FaSearch , FaBell} from 'react-icons/fa'
 import {TbMessageCircle2Filled} from 'react-icons/tb'
-import { useEffect, useState } from "react"
+import { useContext, useEffect, useState } from "react"
+import {UserContext} from 'User'
 import { useRouter } from "next/navigation"
+import { useMutation } from "@tanstack/react-query"
+import { makeRequest } from "../../../axios"
+import { Button } from "flowbite-react"
 export default function DashboardHeader() {
-    const [user , SetUser] = useState({userName : '' , userimg : ''})
+    const {user} = useContext(UserContext);
     const [showMenu , SetMenu] = useState(false)
     const router = useRouter();
-    const logout = (e : any) => {
-        e.preventDefault();
-        localStorage.removeItem('rede-social:token');
-        router.push('/login');
-    }
 
-    useEffect(() => {
-        let value  = localStorage.getItem('rede-social:user')
-        if (value) {
-            SetUser(JSON.parse(value));
-        }
-    },[]);
+    const mutation = useMutation({
+        mutationFn : async () =>{
+            return await makeRequest.post('auth/logout').then((res) => {
+                res.data;
+            });
+        },
+        onSuccess: () => {
+            localStorage.removeItem("rede-social:user");
+            router.push("login");
+        },
+    });
     return (
         <header className="w-full bg-white flex flex-row  justify-between py-2 px-4 items-center shadow-md" >
             <Link href='/' className="font-bold text-sky-900 text-lg">Dashboard</Link>
@@ -46,7 +50,9 @@ export default function DashboardHeader() {
                     {showMenu && 
                     <div className="absolute flex-col flex bg-white p-4 shadow-md rounded-md gap-2 border-t- whitespace-nowrap right-[-5px]">
                         <Link href='' className="border-b">Editar Perfil</Link>
-                        <Link href='' onClick={(e) => (logout(e))}>Logout</Link>
+                        <button onClick={() => mutation.mutate()}>
+                            Logout
+                        </button>
                     </div>
                     }
                 </div>
