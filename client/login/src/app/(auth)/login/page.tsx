@@ -12,7 +12,7 @@ export default function Login (){
     const handleLogin = (e:any) => {
         e.preventDefault();
         makeRequest.post('/auth/login' , {email , password}).then((res) => {
-            localStorage.setItem("rede-social:user" , JSON.stringify(res.data.user))
+            localStorage.setItem("rede-social:user" , JSON.stringify(res.data.data))
             router.push('/');
         }).catch((err) => {
             alert(err.response.msg);
